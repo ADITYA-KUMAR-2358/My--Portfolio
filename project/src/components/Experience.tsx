@@ -69,7 +69,11 @@ const Experience = () => {
     },
   ];
 
-  return <Timeline data={data} />;
+  return (
+    <section id="experience" className="relative">
+      <Timeline data={data} />
+    </section>
+  );
 };
 
 export default Experience;
