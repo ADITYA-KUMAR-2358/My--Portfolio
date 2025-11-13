@@ -79,7 +79,7 @@ const About = () => {
             >
               {/* Profile Picture */}
               <img
-                src="/aditya2.jpg"
+                src="/aditya.jpg"
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover mb-6 shadow-lg border-4 border-blue-500"
               />

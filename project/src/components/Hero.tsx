@@ -107,7 +107,7 @@ const Hero = () => {
               >
                 <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-800 to-neutral-900 flex items-center justify-center relative overflow-hidden">
                   <motion.img
-                    src="/aditya.jpg"
+                    src="/aditya3.jpg"
                     alt="Aditya"
                     className="w-full h-full object-cover rounded-full"
                     initial={{ scale: 0, rotate: 0 }}
