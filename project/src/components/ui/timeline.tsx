@@ -1,4 +1,3 @@
-// ─── ui/timeline.tsx ──────────────────────────────────────────────
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -11,95 +10,53 @@ interface TimelineEntry {
   bullets: string[];
 }
 
-/* ── single entry card ── */
+/* ── card ── */
 function TimelineCard({ item, index }: { item: TimelineEntry; index: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.55, delay: index * 0.07 }}
-      className="flex gap-6 md:gap-10 pt-10 md:pt-16 group"
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.06 }}
+      className="flex gap-6 md:gap-10 pt-10 md:pt-14"
     >
-      {/* ── left: year + dot ── */}
-      <div className="relative flex flex-col items-center flex-shrink-0 w-14 md:w-28">
-        {/* dot */}
+      {/* left */}
+      <div className="relative flex flex-col items-center w-14 md:w-28">
         <div className="sticky top-40 flex flex-col items-center">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center z-10 flex-shrink-0"
+          <div className="w-9 h-9 rounded-full flex items-center justify-center"
             style={{
               background: "linear-gradient(135deg,#6366f1,#38bdf8)",
-              boxShadow: "0 0 16px rgba(99,102,241,0.35)",
-            }}
-          >
-            <div className="w-2.5 h-2.5 rounded-full bg-white" />
+              boxShadow: "0 0 12px rgba(99,102,241,0.3)"
+            }}>
+            <div className="w-2.5 h-2.5 bg-white rounded-full" />
           </div>
-          {/* year label — desktop */}
-          <span
-            className="hidden md:block mt-3 text-3xl font-black leading-none text-center"
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              background: "linear-gradient(135deg,#6366f1,#38bdf8)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
+
+          <span className="hidden md:block mt-3 text-2xl font-bold bg-gradient-to-r from-indigo-500 to-sky-400 bg-clip-text text-transparent">
             {item.year}
           </span>
         </div>
       </div>
 
-      {/* ── right: card ── */}
-      <div
-        className="flex-1 mb-2 rounded-2xl p-5 md:p-6 transition-shadow duration-300
-                   bg-white/60 dark:bg-white/[0.04]
-                   border border-black/[0.07] dark:border-white/[0.08]
-                   backdrop-blur-sm shadow-sm hover:shadow-md"
-      >
-        {/* year — mobile */}
-        <span
-          className="md:hidden inline-block text-lg font-black mb-2"
-          style={{
-            fontFamily: "'Syne', sans-serif",
-            background: "linear-gradient(135deg,#6366f1,#38bdf8)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
-        >
+      {/* right */}
+      <div className="flex-1 rounded-xl p-5 bg-white/60 dark:bg-white/5 border border-white/10 backdrop-blur-sm">
+        <span className="md:hidden font-bold text-indigo-400">
           {item.year}
         </span>
 
-        {/* tag + title */}
-        <div className="mb-4">
-          <span
-            className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full mb-2"
-            style={{
-              background: "rgba(99,102,241,0.12)",
-              border: "1px solid rgba(99,102,241,0.25)",
-              color: "#a5b4fc",
-              fontFamily: "'DM Mono', monospace",
-            }}
-          >
+        <div className="mb-3">
+          <span className="text-xs px-2 py-1 bg-indigo-500/10 text-indigo-400 rounded-full">
             {item.tag}
           </span>
-          <h3
-            className="text-base md:text-lg font-bold text-gray-900 dark:text-gray-100 leading-snug"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
+
+          <h3 className="font-semibold mt-2">
             {item.title}
           </h3>
         </div>
 
-        {/* bullets */}
-        <ul className="space-y-2">
+        <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
           {item.bullets.map((b, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-              <span
-                className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                style={{ background: "linear-gradient(135deg,#6366f1,#38bdf8)" }}
-              />
+            <li key={i} className="flex gap-2">
+              <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-2" />
               {b}
             </li>
           ))}
@@ -109,14 +66,21 @@ function TimelineCard({ item, index }: { item: TimelineEntry; index: number }) {
   );
 }
 
-/* ── main Timeline ── */
+/* ── main ── */
 export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
-  const ref          = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
 
+  // 🔥 FIX: dynamic height
   useEffect(() => {
-    if (ref.current) setHeight(ref.current.getBoundingClientRect().height);
+    const updateHeight = () => {
+      if (ref.current) setHeight(ref.current.offsetHeight);
+    };
+
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -124,90 +88,40 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
     offset: ["start 10%", "end 90%"],
   });
 
-  const lineHeight  = useTransform(scrollYProgress, [0, 1], [0, height]);
+  const lineHeight = useTransform(scrollYProgress, [0, 1], [0, height]);
   const lineOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full bg-[#f8fafc] dark:bg-[#080c14] relative overflow-hidden"
-    >
-      {/* ── background blobs ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] rounded-full blur-[110px] bg-indigo-400/[0.06] dark:bg-indigo-600/[0.09]" />
-        <div className="absolute bottom-1/4 left-1/4 w-[350px] h-[350px] rounded-full blur-[100px] bg-sky-400/[0.05]  dark:bg-sky-600/[0.07]" />
-      </div>
+    <div ref={containerRef} className="relative bg-[#080c14] py-24">
 
-      {/* ── grid overlay ── */}
-      <div
-        className="absolute inset-0 opacity-[0.025] dark:opacity-[0.04] pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(rgba(99,102,241,1) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,1) 1px,transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
+      <div className="max-w-4xl mx-auto px-6">
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <h2 className="text-4xl font-bold mb-12 text-white">
+          Experience Timeline
+        </h2>
 
-        {/* ── section header ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.65 }}
-          className="mb-16"
-        >
-          <p
-            className="text-xs tracking-[0.25em] uppercase font-medium text-indigo-500 dark:text-indigo-400 mb-3"
-            style={{ fontFamily: "'DM Mono', monospace" }}
-          >
-            my journey
-          </p>
-          <h2
-            className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white leading-tight"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
-            Experience &{" "}
-            <span
-              style={{
-                background: "linear-gradient(135deg,#6366f1,#38bdf8)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Timeline
-            </span>
-          </h2>
-          <div className="mt-4 w-12 h-[3px] rounded-full bg-gradient-to-r from-indigo-500 to-sky-400" />
-          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 max-w-md leading-relaxed">
-            From secondary school curiosity to building AI-powered products — here's how I got here.
-          </p>
-        </motion.div>
+        <div ref={ref} className="relative">
 
-        {/* ── entries ── */}
-        <div ref={ref} className="relative pl-6 md:pl-0">
           {data.map((item, i) => (
             <TimelineCard key={i} item={item} index={i} />
           ))}
 
-          {/* ── scroll-driven line ── */}
+          {/* 🔥 FIXED LINE */}
           <div
-            style={{ height: `${height}px` }}
-            className="absolute left-[17px] md:left-[17px] top-0 w-[2px] overflow-hidden pointer-events-none"
+            className="absolute top-0 left-[22px] md:left-[56px] w-[2px]"
             style={{
-              height: `${height}px`,
-              background: "linear-gradient(to bottom, transparent, rgba(99,102,241,0.12), transparent)",
+              height,
+              background: "linear-gradient(to bottom, transparent, rgba(99,102,241,0.15), transparent)",
             }}
           >
             <motion.div
               style={{ height: lineHeight, opacity: lineOpacity }}
-              className="absolute inset-x-0 top-0 w-[2px] rounded-full pointer-events-none"
-              style={{
-                background: "linear-gradient(to bottom, #6366f1, #38bdf8, transparent)",
-              }}
-            />
+              className="absolute top-0 w-full"
+            >
+              <div className="w-full h-full bg-gradient-to-b from-indigo-500 via-sky-400 to-transparent" />
+            </motion.div>
           </div>
+
         </div>
       </div>
     </div>

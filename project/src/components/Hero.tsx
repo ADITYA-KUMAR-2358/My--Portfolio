@@ -187,22 +187,33 @@ const Hero = () => {
 
         {/* profile image */}
         <TiltCard>
-          <motion.div initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, type: "spring", stiffness: 120 }}
-            className="relative inline-block mb-6"
-          >
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="absolute -inset-2 rounded-full"
-              style={{ background: "conic-gradient(from 0deg,#6366f1,#38bdf8,#ec4899,#6366f1)", padding: "2px", borderRadius: "9999px", WebkitMask: "linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0)", WebkitMaskComposite: "xor", maskComposite: "exclude" }}
-            />
-            <div className="absolute inset-0 rounded-full blur-xl scale-110" style={{ background: t.glow }} />
-            <div className="relative w-36 h-36 rounded-full p-[3px] bg-gradient-to-br from-indigo-500 via-sky-400 to-pink-500">
-              <div className="w-full h-full rounded-full overflow-hidden" style={{ background: dark ? "#0f172a" : "#f1f5f9" }}>
-                <img src="/aditya3.jpg" alt="Aditya Kumar" className="w-full h-full object-cover rounded-full" />
-              </div>
-            </div>
-          </motion.div>
-        </TiltCard>
+  <motion.div
+    initial={{ opacity: 0, scale: 0.7 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.8, type: "spring", stiffness: 120 }}
+    className="relative inline-block mb-6 mt-16"
+  >
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+      className="absolute -inset-2 rounded-full"
+      style={{
+        background: "conic-gradient(from 0deg,#6366f1,#38bdf8,#ec4899,#6366f1)",
+        padding: "2px",
+        borderRadius: "9999px",
+        WebkitMask: "linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0)",
+        WebkitMaskComposite: "xor",
+        maskComposite: "exclude",
+      }}
+    />
+    <div className="absolute inset-0 rounded-full blur-xl scale-110" style={{ background: t.glow }} />
+    <div className="relative w-36 h-36 rounded-full p-[3px] bg-gradient-to-br from-indigo-500 via-sky-400 to-pink-500">
+      <div className="w-full h-full rounded-full overflow-hidden" style={{ background: dark ? "#0f172a" : "#f1f5f9" }}>
+        <img src="/aditya3.jpg" alt="Aditya Kumar" className="w-full h-full object-cover rounded-full" />
+      </div>
+    </div>
+  </motion.div>
+</TiltCard>
 
         {/* greeting */}
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
@@ -212,7 +223,7 @@ const Hero = () => {
 
         {/* name */}
         <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.5 }}
-          className="text-6xl md:text-8xl font-black tracking-tight mb-4 leading-none"
+          className="text-4xl md:text-5xl font-black tracking-tight mb-4 leading-none"
           style={{ fontFamily: "'Syne',sans-serif", color: t.text }}
         >
           Aditya{" "}
