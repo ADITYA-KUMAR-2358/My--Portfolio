@@ -10,11 +10,11 @@ export default function ThemeSwitch() {
         isDark ? "bg-gray-700" : "bg-gray-300"
       }`}
     >
-      <div
-        className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transform transition-transform duration-500 ${
-          isDark ? "translate-x-12 bg-black" : "translate-x-0 bg-white"
-        }`}
-      >
+     <div
+  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transform duration-500 ${
+    isDark ? "translate-x-12 bg-black" : "translate-x-0 bg-white"
+  } transition`}
+>
         {isDark ? (
           <img
             src="/crescent-moon.png"

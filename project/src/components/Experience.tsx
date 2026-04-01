@@ -1,71 +1,59 @@
+// ─── Experience.tsx ───────────────────────────────────────────────
 import { Timeline } from "./ui/timeline";
 
 const Experience = () => {
   const data = [
     {
-      title: "2020",
-      content: (
-        <p className="text-neutral-600 dark:text-neutral-300">
-          Completed <b>ICSE (Class 10)</b> from <b>St. Paul’s School, Gorakhpur</b> 🏫  
-          Excelled in Science and Computer Applications 💻  
-          Developed early curiosity for coding and astrophysics ✨
-        </p>
-      ),
+      year: "2020",
+      tag: "Secondary School",
+      title: "ICSE Class X · St. Paul's School, Gorakhpur",
+      bullets: [
+        "Completed ICSE with distinction in Science & Computer Applications",
+        "Developed early curiosity for coding, algorithms, and astrophysics",
+        "First hands-on programs in BASIC and intro to web fundamentals",
+      ],
     },
     {
-      title: "2021",
-      content: (
-        <p className="text-neutral-600 dark:text-neutral-300">
-          Continued senior secondary education at <b>St. Paul’s School (ISC)</b> 📚  
-          Focused on <b>Physics, Chemistry, Mathematics, and Computer Science</b> ⚙️  
-          Began exploring programming concepts and AI basics 🤖
-        </p>
-      ),
+      year: "2021–22",
+      tag: "Higher Secondary",
+      title: "ISC Class XII · St. Paul's School, Gorakhpur",
+      bullets: [
+        "Studied Physics, Chemistry, Mathematics & Computer Science (ISC board)",
+        "Deepened programming knowledge — data structures, Python basics",
+        "Began exploring AI concepts and decided to pursue CSE at university level",
+      ],
     },
     {
-      title: "2022",
-      content: (
-        <p className="text-neutral-600 dark:text-neutral-300">
-          Completed <b>ISC (Class 12)</b> from St. Paul’s School, Gorakhpur 🎓  
-          Started preparing for engineering entrance exams 🧠  
-          Decided to pursue a career in <b>Computer Science Engineering</b> 💻
-        </p>
-      ),
+      year: "2023",
+      tag: "University · Year 1",
+      title: "B.Tech CSE · Pimpri Chinchwad University, Pune",
+      bullets: [
+        "Enrolled in B.Tech Computer Science Engineering (CGPA: 8.65 / 10)",
+        "Joined ACM Student Chapter — became Community Project Leader",
+        "Kicked off competitive programming on Codeforces & LeetCode",
+      ],
     },
     {
-      title: "2023",
-      content: (
-        <p className="text-neutral-600 dark:text-neutral-300">
-          Started Engineering Journey at <b>Pimpri Chinchwad University</b> 🎓  
-          Pursuing <b>B.Tech in Computer Science Engineering</b> 💻  
-          Joined <b>ACM Student Chapter</b> and became <b>Community Project Leader</b> 🚀  
-          Began working on college-level AI and tech innovation projects 🤩
-        </p>
-      ),
+      year: "2024",
+      tag: "University · Year 2",
+      title: "Projects, Courses & Open Source",
+      bullets: [
+        "Built WaveBuzz — social media authenticity & proximity detection app",
+        "Created an IoT gesture-controlled LED/motor system using ESP32",
+        "Completed AWS Cloud Architect & Full-Stack Development (HTML/CSS/JS/Java) courses",
+        "Explored AI/ML fundamentals and contributed to open-source hackathons",
+      ],
     },
     {
-      title: "2024",
-      content: (
-        <p className="text-neutral-600 dark:text-neutral-300">
-          Built impactful projects like <b>WaveBuzz</b> – a social media authenticity and proximity detection app 🌐  
-          Created an <b>IoT gesture-controlled LED and motor system</b> using ESP32 ⚡  
-          Completed <b>AWS Cloud Architect</b> and <b>Full-Stack Development (HTML, CSS, Java, JavaScript)</b> courses ✅  
-          Explored <b>AI & ML fundamentals</b> and contributed to open-source projects 🧠  
-          Participated in community hackathons and college-level innovation challenges 🚀
-        </p>
-      ),
-    },
-    {
-      title: "2025",
-      content: (
-        <p className="text-neutral-600 dark:text-neutral-300">
-          Developing an <b>AI-powered PDF Chatbot</b> using LangChain and LLMs 🤖  
-          Appointed as <b>Editor-in-Chief</b> of the college magazine to showcase student achievements 📝  
-          Leading <b>open-source and freelancing projects</b> in AI and web development 🌍  
-          Enhancing <b>WaveBuzz</b> with fake account detection and real-time proximity analysis 🔍  
-          Preparing for <b>internships and MNC placements</b> with Google as the dream destination 💫
-        </p>
-      ),
+      year: "2025",
+      tag: "University · Year 3",
+      title: "AI Projects, Leadership & Placements",
+      bullets: [
+        "Built ASK M.I.R.A.G.E — fully offline RAG chatbot using LangChain + LLaMA + FAISS",
+        "Appointed Editor-in-Chief of the college magazine",
+        "Leading open-source and freelancing projects in AI and full-stack web development",
+        "Actively preparing for internships and placements — dream destination: Google",
+      ],
     },
   ];
 

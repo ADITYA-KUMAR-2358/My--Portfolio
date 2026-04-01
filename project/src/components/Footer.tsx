@@ -2,175 +2,215 @@ import { motion } from 'framer-motion';
 import { ArrowUp, Github, Heart, Instagram, Linkedin, Mail } from 'lucide-react';
 import React from 'react';
 
+const socialLinks = [
+  { icon: Github,    href: "https://github.com/ADITYA-KUMAR-2358",                label: "GitHub",    color: "#f1f5f9" },
+  { icon: Linkedin,  href: "https://www.linkedin.com/in/aditya-kumar-09848b292/", label: "LinkedIn",  color: "#38bdf8" },
+  { icon: Instagram, href: "https://instagram.com/bezaar_adi",                    label: "Instagram", color: "#ec4899" },
+  { icon: Mail,      href: "mailto:aditya.kumar23@pcu.edu.in",                    label: "Email",     color: "#10b981" },
+];
+
+const quickLinks = [
+  { name: 'Home',       href: '#home'       },
+  { name: 'About',      href: '#about'      },
+  { name: 'Experience', href: '#experience' },
+  { name: 'Projects',   href: '#projects'   },
+  { name: 'Contact',    href: '#contact'    },
+];
+
+const fadeUp = {
+  hidden:  { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
+};
+
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-
-  const socialLinks = [
-    {
-      icon: Github,
-      href: "https://github.com/ADITYA-KUMAR-2358",
-      label: "GitHub",
-      color: "hover:text-gray-900 dark:hover:text-white"
-    },
-    {
-      icon: Linkedin,
-      href: "https://www.linkedin.com/in/aditya-kumar-09848b292/",
-      label: "LinkedIn",
-      color: "hover:text-blue-600"
-    },
-    {
-      icon: Instagram,
-      href: "https://instagram.com/bezaar_adi",
-      label: "Twitter",
-      color: "hover:text-blue-400"
-    },
-    {
-      icon: Mail,
-      href: "mailto:aditya.kumar23@pcu.edu.in",
-      label: "Email",
-      color: "hover:text-emerald-600"
-    }
-  ];
-
-  const quickLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' }
-  ];
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const year = new Date().getFullYear();
 
   const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    element?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.querySelector(href);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
   };
 
   return (
-    <footer className="bg-gray-900 dark:bg-black text-white relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-emerald-600"></div>
+    <footer
+      className="relative overflow-hidden"
+      style={{ background: '#05080f' }}
+    >
+      {/* ── top border gradient ── */}
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.5), rgba(56,189,248,0.5), transparent)' }}
+      />
+
+      {/* ── background blobs ── */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] rounded-full blur-[100px] bg-indigo-600/[0.06]" />
+        <div className="absolute bottom-0 right-1/4 w-[300px] h-[250px] rounded-full blur-[90px]  bg-sky-600/[0.05]" />
       </div>
 
-      <div className="relative">
-        {/* Main Footer Content */}
-        <div className="container mx-auto px-4 py-16">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Brand Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="lg:col-span-2"
-            >
-              <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+      {/* ── grid overlay ── */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(99,102,241,1) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,1) 1px,transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-0">
+
+        {/* ── main grid ── */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ staggerChildren: 0.1 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 pb-12"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        >
+
+          {/* brand — 5 cols */}
+          <motion.div variants={fadeUp} className="lg:col-span-5 flex flex-col gap-5">
+            {/* logo */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-black flex-shrink-0"
+                style={{ background: 'linear-gradient(135deg,#6366f1,#38bdf8)' }}>
+                A
+              </div>
+              <span className="text-white font-bold text-lg" style={{ fontFamily: "'Syne', sans-serif" }}>
                 Aditya Kumar
-              </h3>
-              <p className="text-gray-300 mb-6 max-w-md leading-relaxed">
-                Passionate software engineer creating innovative solutions and building amazing user experiences. 
-                Always excited to work on challenging projects and learn new technologies.
-              </p>
-              <div className="flex gap-4">
-                {socialLinks.map((social, index) => (
-                  <motion.a
-                    key={index}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.2, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`p-3 bg-gray-800 rounded-full text-gray-400 transition-all duration-300 ${social.color}`}
-                    aria-label={social.label}
-                  >
-                    <social.icon size={20} />
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Quick Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <h4 className="text-lg font-semibold mb-6 text-white">Quick Links</h4>
-              <ul className="space-y-3">
-                {quickLinks.map((link) => (
-                  <li key={link.name}>
-                    <motion.button
-                      onClick={() => scrollToSection(link.href)}
-                      whileHover={{ x: 5 }}
-                      className="text-gray-400 hover:text-white transition-colors duration-200 block"
-                    >
-                      {link.name}
-                    </motion.button>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            {/* Contact Info */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <h4 className="text-lg font-semibold mb-6 text-white">Get In Touch</h4>
-              <div className="space-y-3">
-                <p className="text-gray-400">
-                  Ready to work together?
-                </p>
-                <motion.a
-                  href="mailto:aditya.kumar23@pcu.edu.in"
-                  whileHover={{ scale: 1.05 }}
-                  className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300"
-                >
-                  Let's Connect
-                </motion.a>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-800">
-          <div className="container mx-auto px-4 py-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="text-gray-400 text-center md:text-left flex items-center gap-2"
-              >
-                © {currentYear} Aditya Kumar. Made with 
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="text-red-500"
-                >
-                  <Heart size={16} fill="currentColor" />
-                </motion.span>
-                and lots of coffee.
-              </motion.p>
-              
-              <motion.button
-                onClick={scrollToTop}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-white hover:shadow-lg transition-all duration-300"
-                aria-label="Scroll to top"
-              >
-                <ArrowUp size={20} />
-              </motion.button>
+              </span>
             </div>
-          </div>
+
+            <p className="text-sm leading-relaxed max-w-sm" style={{ color: 'rgba(148,163,184,0.75)' }}>
+              B.Tech CSE student · Full-stack developer · Competitive programmer.
+              Building things that matter, one commit at a time.
+            </p>
+
+            {/* social icons */}
+            <div className="flex gap-2">
+              {socialLinks.map((s) => (
+                <motion.a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ y: -3, scale: 1.08 }}
+                  whileTap={{ scale: 0.93 }}
+                  aria-label={s.label}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl transition-colors duration-150"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    color: 'rgba(148,163,184,0.7)',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = s.color)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(148,163,184,0.7)')}
+                >
+                  <s.icon size={16} />
+                </motion.a>
+              ))}
+            </div>
+
+            {/* availability badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full self-start"
+              style={{ background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.20)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs font-medium text-emerald-400"
+                style={{ fontFamily: "'DM Mono', monospace" }}>
+                Open to opportunities
+              </span>
+            </div>
+          </motion.div>
+
+          {/* quick links — 3 cols */}
+          <motion.div variants={fadeUp} className="lg:col-span-3">
+            <h4 className="text-xs tracking-[0.2em] uppercase font-semibold mb-5"
+              style={{ color: 'rgba(148,163,184,0.5)', fontFamily: "'DM Mono', monospace" }}>
+              Navigation
+            </h4>
+            <ul className="space-y-2.5">
+              {quickLinks.map((link) => (
+                <li key={link.name}>
+                  <motion.button
+                    onClick={() => scrollToSection(link.href)}
+                    whileHover={{ x: 4 }}
+                    className="text-sm transition-colors duration-150 flex items-center gap-2 group"
+                    style={{ color: 'rgba(148,163,184,0.7)', fontFamily: "'DM Mono', monospace" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#e2e8f0')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(148,163,184,0.7)')}
+                  >
+                    <span className="w-1 h-1 rounded-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
+                    {link.name}
+                  </motion.button>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* contact — 4 cols */}
+          <motion.div variants={fadeUp} className="lg:col-span-4">
+            <h4 className="text-xs tracking-[0.2em] uppercase font-semibold mb-5"
+              style={{ color: 'rgba(148,163,184,0.5)', fontFamily: "'DM Mono', monospace" }}>
+              Get In Touch
+            </h4>
+
+            <p className="text-sm mb-5" style={{ color: 'rgba(148,163,184,0.7)' }}>
+              Got a project, opportunity, or just want to say hi? My inbox is always open.
+            </p>
+
+            <motion.a
+              href="mailto:aditya.kumar23@pcu.edu.in"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+              style={{ background: 'linear-gradient(135deg,#6366f1,#38bdf8)', boxShadow: '0 0 16px rgba(99,102,241,0.25)' }}
+            >
+              <Mail size={15} />
+              Say Hello
+            </motion.a>
+
+            
+          </motion.div>
+        </motion.div>
+
+        {/* ── bottom bar ── */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-5">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-xs flex items-center gap-1.5"
+            style={{ color: 'rgba(100,116,139,0.7)', fontFamily: "'DM Mono', monospace" }}
+          >
+            © {year} Aditya Kumar · Built with
+            <motion.span
+              animate={{ scale: [1, 1.25, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity }}
+              className="text-red-500 inline-flex"
+            >
+              <Heart size={12} fill="currentColor" />
+            </motion.span>
+            &amp; and lots of coffee
+          </motion.p>
+
+          {/* scroll to top */}
+          <motion.button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            whileHover={{ scale: 1.08, y: -2 }}
+            whileTap={{ scale: 0.93 }}
+            aria-label="Scroll to top"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-colors duration-150"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: 'rgba(148,163,184,0.7)',
+              fontFamily: "'DM Mono', monospace",
+            }}
+          >
+            <ArrowUp size={13} />
+            Back to top
+          </motion.button>
         </div>
       </div>
     </footer>
