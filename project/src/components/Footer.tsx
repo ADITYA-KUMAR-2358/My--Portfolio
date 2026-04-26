@@ -159,16 +159,19 @@ const Footer: React.FC = () => {
               Got a project, opportunity, or just want to say hi? My inbox is always open.
             </p>
 
-            <motion.a
-              href="mailto:aditya.kumar23@pcu.edu.in"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
-              style={{ background: 'linear-gradient(135deg,#6366f1,#38bdf8)', boxShadow: '0 0 16px rgba(99,102,241,0.25)' }}
-            >
-              <Mail size={15} />
-              Say Hello
-            </motion.a>
+            <motion.button
+  onClick={() => {
+    const el = document.getElementById('contact');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }}
+  whileHover={{ scale: 1.03 }}
+  whileTap={{ scale: 0.97 }}
+  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+  style={{ background: 'linear-gradient(135deg,#6366f1,#38bdf8)', boxShadow: '0 0 16px rgba(99,102,241,0.25)' }}
+>
+  <Mail size={15} />
+  Say Hello
+</motion.button>
 
             
           </motion.div>
