@@ -20,13 +20,15 @@ const Navbar = () => {
   useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 40));
 
   const scrollToSection = (href: string) => {
-    const el = document.querySelector(href);
-    if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 72;
-      window.scrollTo({ top, behavior: 'smooth' });
-      setActive(href);
-    }
+    const id = href.startsWith('#') ? href.slice(1) : href;
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleMobileNav = (href: string) => {
     setIsOpen(false);
+    setActive(href);
+    setTimeout(() => scrollToSection(href), 250); // wait for menu close animation
   };
 
   return (
@@ -35,7 +37,7 @@ const Navbar = () => {
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed top-0 left-0 right-0 z-50"
+        className="fixed top-0 left-0 right-0 z-[9999]"
         style={{
           background: scrolled ? 'rgba(8,12,20,0.88)' : 'transparent',
           borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
@@ -53,8 +55,6 @@ const Navbar = () => {
               whileTap={{ scale: 0.97 }}
               className="flex items-center gap-2.5 select-none group"
             >
-
-              {/* name — two-tone */}
               <span style={{ fontFamily: "'Syne', sans-serif" }} className="text-[15px] font-bold">
                 <span className="text-white">Aditya</span>
                 {' '}
@@ -76,7 +76,7 @@ const Navbar = () => {
                 return (
                   <motion.button
                     key={item.name}
-                    onClick={() => scrollToSection(item.href)}
+                    onClick={() => { setActive(item.href); scrollToSection(item.href); }}
                     whileTap={{ scale: 0.95 }}
                     className="relative px-4 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150 group"
                     style={{
@@ -86,7 +86,6 @@ const Navbar = () => {
                     onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = '#cbd5e1'; }}
                     onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = 'rgba(148,163,184,0.75)'; }}
                   >
-                    {/* active sliding pill */}
                     {isActive && (
                       <motion.span
                         layoutId="nav-active"
@@ -98,7 +97,6 @@ const Navbar = () => {
                         transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                       />
                     )}
-                    {/* hover bg — non-active */}
                     {!isActive && (
                       <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
                         style={{ background: 'rgba(255,255,255,0.04)' }} />
@@ -109,11 +107,10 @@ const Navbar = () => {
               })}
             </div>
 
-            {/* ── Right: ThemeSwitch + CTA + hamburger ── */}
+            {/* ── Right: ThemeSwitch + hamburger ── */}
             <div className="flex items-center gap-2">
               <ThemeSwitch />
 
-              {/* hamburger */}
               <motion.button
                 onClick={() => setIsOpen(!isOpen)}
                 whileTap={{ scale: 0.9 }}
@@ -151,7 +148,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.22, ease: 'easeOut' }}
-              className="md:hidden overflow-hidden"
+              className="md:hidden overflow-hidden absolute top-16 left-0 w-full z-[10000]"
               style={{
                 background: 'rgba(8,12,20,0.97)',
                 borderTop: '1px solid rgba(255,255,255,0.06)',
@@ -164,7 +161,7 @@ const Navbar = () => {
                   return (
                     <motion.button
                       key={item.name}
-                      onClick={() => scrollToSection(item.href)}
+                      onClick={() => handleMobileNav(item.href)}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04 }}
@@ -181,10 +178,9 @@ const Navbar = () => {
                   );
                 })}
 
-                {/* mobile hire me */}
                 <div className="pt-2 pb-1">
                   <button
-                    onClick={() => scrollToSection('#contact')}
+                    onClick={() => handleMobileNav('#contact')}
                     className="w-full py-2.5 rounded-xl text-sm font-semibold text-white"
                     style={{ background: 'linear-gradient(135deg,#6366f1,#38bdf8)', fontFamily: "'DM Mono', monospace" }}
                   >
@@ -197,14 +193,18 @@ const Navbar = () => {
         </AnimatePresence>
       </motion.nav>
 
-      {/* mobile backdrop */}
+      {/* mobile backdrop — pointerEvents none so it never blocks clicks */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-40 md:hidden"
-            style={{ background: 'rgba(0,0,0,0.25)' }}
+            className="fixed inset-0 z-[9990] md:hidden"
+            style={{
+              background: 'rgba(0,0,0,0.4)',
+              backdropFilter: 'blur(4px)',
+              pointerEvents: 'auto',
+            }}
           />
         )}
       </AnimatePresence>
