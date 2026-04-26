@@ -1,6 +1,6 @@
 import emailjs from '@emailjs/browser';
 import { AnimatePresence, motion } from 'framer-motion';
-import { AlertCircle, CheckCircle, Github, Linkedin, Mail, MapPin, Phone, Send } from 'lucide-react';
+import { AlertCircle, CheckCircle, Github, Linkedin, Mail, MapPin, Send } from 'lucide-react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -11,7 +11,6 @@ interface FormData {
   message: string;
 }
 
-/* ── animation presets ── */
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
@@ -21,7 +20,6 @@ const stagger = {
   visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
-/* ── input field wrapper ── */
 function Field({
   label, id, error, children,
 }: {
@@ -53,7 +51,6 @@ function Field({
   );
 }
 
-/* ── shared input classes ── */
 const inputCls = `
   w-full px-4 py-3 rounded-xl text-sm
   bg-white/70 dark:bg-white/[0.04]
@@ -64,10 +61,8 @@ const inputCls = `
   transition-all duration-200 backdrop-blur-sm
 `.trim();
 
-/* ── contact info cards ── */
 const contactInfo = [
   { icon: Mail,   label: "Email",    value: "aditya.kumar23@pcu.edu.in", href: "mailto:aditya.kumar23@pcu.edu.in", color: "#6366f1" },
-  { icon: Phone,  label: "Phone",    value: "+91 76520 96658",           href: "tel:+917652096658",               color: "#0ea5e9" },
   { icon: MapPin, label: "Location", value: "Pune, Maharashtra · India", href: "#",                               color: "#10b981" },
 ];
 
@@ -76,7 +71,12 @@ const socialLinks = [
   { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/aditya-kumar-09848b292/", color: "#38bdf8" },
 ];
 
-/* ── main component ── */
+/* ── EmailJS config ── */
+const SERVICE_ID    = import.meta.env.VITE_EMAILJS_SERVICE_ID    as string;
+const TEMPLATE_ID   = import.meta.env.VITE_EMAILJS_TEMPLATE_ID   as string;
+const AUTO_REPLY_ID = import.meta.env.VITE_EMAILJS_AUTO_REPLY_TEMPLATE_ID as string;
+const PUBLIC_KEY    = import.meta.env.VITE_EMAILJS_PUBLIC_KEY    as string;
+
 const Contact: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
@@ -87,25 +87,41 @@ const Contact: React.FC = () => {
     reset,
   } = useForm<FormData>();
 
-  const SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-  const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-  const PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
   const onSubmit = async (data: FormData) => {
     setStatus('sending');
     try {
+      // 1. Notify you
       await emailjs.send(
-        SERVICE_ID, TEMPLATE_ID,
-        { from_name: data.name, from_email: data.email, subject: data.subject, message: data.message },
-        PUBLIC_KEY,
+        SERVICE_ID,
+        TEMPLATE_ID,
+        {
+          from_name:  data.name,
+          from_email: data.email,
+          subject:    data.subject,
+          message:    data.message,
+        },
+        { publicKey: PUBLIC_KEY }, // ← object form, fixes 422
       );
+
+      // 2. Auto-reply to sender
+      await emailjs.send(
+        SERVICE_ID,
+        AUTO_REPLY_ID,
+        {
+          to_name:  data.name,
+          to_email: data.email,
+        },
+        { publicKey: PUBLIC_KEY }, // ← object form, fixes 422
+      );
+
       setStatus('success');
       reset();
       setTimeout(() => setStatus('idle'), 5000);
-    } catch {
-      setStatus('error');
-      setTimeout(() => setStatus('idle'), 4000);
-    }
+   } catch (err: any) {
+  console.error('EmailJS error:', err?.text ?? err);
+  setStatus('error');
+  setTimeout(() => setStatus('idle'), 4000);
+}
   };
 
   return (
@@ -113,14 +129,12 @@ const Contact: React.FC = () => {
       id="contact"
       className="relative py-24 bg-[#f8fafc] dark:bg-[#080c14] overflow-hidden"
     >
-      {/* ── background blobs ── */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[120px] bg-indigo-400/[0.07] dark:bg-indigo-600/[0.10]" />
         <div className="absolute bottom-0 left-1/4  w-[400px] h-[400px] rounded-full blur-[100px] bg-sky-400/[0.06]    dark:bg-sky-600/[0.08]" />
         <div className="absolute top-1/2  left-0    w-[300px] h-[300px] rounded-full blur-[90px]  bg-pink-400/[0.04]   dark:bg-pink-600/[0.06]" />
       </div>
 
-      {/* ── grid ── */}
       <div className="absolute inset-0 opacity-[0.025] dark:opacity-[0.04] pointer-events-none"
         style={{
           backgroundImage: "linear-gradient(rgba(99,102,241,1) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,1) 1px,transparent 1px)",
@@ -130,7 +144,6 @@ const Contact: React.FC = () => {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ── section title ── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -162,10 +175,9 @@ const Contact: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* ── grid ── */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
 
-          {/* ── left panel (2 cols) ── */}
+          {/* ── Left panel ── */}
           <motion.div
             variants={stagger}
             initial="hidden"
@@ -173,7 +185,6 @@ const Contact: React.FC = () => {
             viewport={{ once: true }}
             className="lg:col-span-2 flex flex-col gap-5"
           >
-            {/* header */}
             <motion.div variants={fadeUp}>
               <h3
                 className="text-2xl font-black text-gray-900 dark:text-white mb-1"
@@ -186,7 +197,6 @@ const Contact: React.FC = () => {
               </p>
             </motion.div>
 
-            {/* contact cards */}
             {contactInfo.map((info) => (
               <motion.a
                 key={info.label}
@@ -217,7 +227,6 @@ const Contact: React.FC = () => {
               </motion.a>
             ))}
 
-            {/* social links */}
             <motion.div variants={fadeUp} className="pt-2">
               <p className="text-xs text-gray-400 dark:text-gray-500 mb-3 tracking-widest uppercase"
                 style={{ fontFamily: "'DM Mono', monospace" }}>
@@ -246,7 +255,6 @@ const Contact: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* availability card */}
             <motion.div
               variants={fadeUp}
               className="mt-auto p-5 rounded-2xl
@@ -268,7 +276,7 @@ const Contact: React.FC = () => {
             </motion.div>
           </motion.div>
 
-          {/* ── right: form (3 cols) ── */}
+          {/* ── Right: form ── */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -281,7 +289,6 @@ const Contact: React.FC = () => {
                             border border-black/[0.07] dark:border-white/[0.08]
                             backdrop-blur-sm shadow-sm">
 
-              {/* form header bar */}
               <div className="px-6 sm:px-8 py-5 border-b border-black/[0.05] dark:border-white/[0.06]
                               flex items-center justify-between">
                 <div>
@@ -296,7 +303,6 @@ const Contact: React.FC = () => {
                     All fields required
                   </p>
                 </div>
-                {/* traffic light dots */}
                 <div className="hidden sm:flex items-center gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-red-400/60" />
                   <div className="w-3 h-3 rounded-full bg-amber-400/60" />
@@ -305,7 +311,6 @@ const Contact: React.FC = () => {
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="p-6 sm:p-8 space-y-5">
-                {/* name + email row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <Field label="Full Name" id="name" error={errors.name?.message}>
                     <input
@@ -344,7 +349,6 @@ const Contact: React.FC = () => {
                   />
                 </Field>
 
-                {/* submit */}
                 <motion.button
                   type="submit"
                   disabled={status === 'sending'}
@@ -363,7 +367,6 @@ const Contact: React.FC = () => {
                     boxShadow: "0 0 20px rgba(99,102,241,0.25)",
                   }}
                 >
-                  {/* shimmer */}
                   {status === 'idle' && (
                     <motion.div
                       className="absolute inset-0 bg-white/10"
