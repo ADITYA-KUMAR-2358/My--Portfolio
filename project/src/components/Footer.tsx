@@ -1,221 +1,236 @@
-import { motion } from 'framer-motion';
-import { ArrowUp, Github, Heart, Instagram, Linkedin, Mail } from 'lucide-react';
-import React from 'react';
+import { motion, useInView } from "framer-motion";
+import { Github, Heart, Instagram, Linkedin, } from "lucide-react";
+import { useEffect, useRef } from "react";
 
-const socialLinks = [
-  { icon: Github,    href: "https://github.com/ADITYA-KUMAR-2358",                label: "GitHub",    color: "#f1f5f9" },
-  { icon: Linkedin,  href: "https://www.linkedin.com/in/aditya-kumar-09848b292/", label: "LinkedIn",  color: "#38bdf8" },
-  { icon: Instagram, href: "https://instagram.com/bezaar_adi",                    label: "Instagram", color: "#ec4899" },
-  { icon: Mail,      href: "mailto:aditya.kumar23@pcu.edu.in",                    label: "Email",     color: "#10b981" },
-];
-
-const quickLinks = [
-  { name: 'Home',       href: '#home'       },
-  { name: 'About',      href: '#about'      },
-  { name: 'Experience', href: '#experience' },
-  { name: 'Projects',   href: '#projects'   },
-  { name: 'Contact',    href: '#contact'    },
-];
-
-const fadeUp = {
-  hidden:  { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
+const T = {
+  bg:      "#080c14",
+  text:    "#f8fafc",
+  subtext: "#94a3b8",
+  muted:   "#64748b",
+  chip:  { bg: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" },
 };
 
-const Footer: React.FC = () => {
-  const year = new Date().getFullYear();
+function ParticleField() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const c = ref.current; if (!c) return;
+    const ctx = c.getContext("2d"); if (!ctx) return;
+    let id: number;
+    const resize = () => { c.width = c.offsetWidth; c.height = c.offsetHeight; };
+    resize(); window.addEventListener("resize", resize);
+    const pts = Array.from({ length: 28 }, () => ({
+      x: Math.random() * c.width, y: Math.random() * c.height,
+      r: Math.random() * 1.1 + 0.3,
+      dx: (Math.random() - .5) * .2, dy: (Math.random() - .5) * .2,
+      o: Math.random() * .2 + .05,
+    }));
+    const draw = () => {
+      ctx.clearRect(0, 0, c.width, c.height);
+      pts.forEach(p => {
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(148,163,184,${p.o})`; ctx.fill();
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < 0 || p.x > c.width)  p.dx *= -1;
+        if (p.y < 0 || p.y > c.height) p.dy *= -1;
+      });
+      for (let i = 0; i < pts.length; i++) for (let j = i+1; j < pts.length; j++) {
+        const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+        if (d < 85) {
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(99,102,241,${.05*(1-d/85)})`; ctx.lineWidth = .5; ctx.stroke();
+        }
+      }
+      id = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={ref} className="absolute inset-0 w-full h-full pointer-events-none" />;
+}
 
-  const scrollToSection = (href: string) => {
+const socials = [
+  { icon: Github,    href: "https://github.com/ADITYA-KUMAR-2358",                label: "GitHub"    },
+  { icon: Linkedin,  href: "https://www.linkedin.com/in/aditya-kumar-09848b292/", label: "LinkedIn"  },
+  { icon: Instagram, href: "https://instagram.com/bezaar_adi",                    label: "Instagram" },
+];
+
+const navLinks = [
+  { name: "Home",       href: "#home"       },
+  { name: "About",      href: "#about"      },
+  { name: "Experience", href: "#experience" },
+  { name: "Projects",   href: "#projects"   },
+  { name: "Contact",    href: "#contact"    },
+];
+
+const MARQUEE = ["Full-Stack Dev", "·", "Competitive Programmer", "·", "Open Source", "·", "B.Tech CSE @PCET", "·", "Tech Enthusiast", "·", "Problem Solver", "·"];
+
+const Footer = () => {
+  const year   = new Date().getFullYear();
+  const ref    = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-30px" });
+
+  const scrollTo = (href: string) => {
     const el = document.querySelector(href);
-    if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 72;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 72, behavior: "smooth" });
   };
 
   return (
-    <footer
-      className="relative overflow-hidden"
-      style={{ background: '#05080f' }}
-    >
-      {/* ── top border gradient ── */}
-      <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.5), rgba(56,189,248,0.5), transparent)' }}
-      />
+    <footer ref={ref} className="relative overflow-hidden" style={{ background: T.bg }}>
 
-      {/* ── background blobs ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] rounded-full blur-[100px] bg-indigo-600/[0.06]" />
-        <div className="absolute bottom-0 right-1/4 w-[300px] h-[250px] rounded-full blur-[90px]  bg-sky-600/[0.05]" />
-      </div>
+      {/* grid */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ backgroundImage: "linear-gradient(rgba(128,128,128,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(128,128,128,0.07) 1px,transparent 1px)", backgroundSize: "60px 60px" }} />
 
-      {/* ── grid overlay ── */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(99,102,241,1) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,1) 1px,transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-      />
+      {/* glow */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 60% 50% at 50% 100%,rgba(99,102,241,0.09),transparent)" }} />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-0">
+      <ParticleField />
 
-        {/* ── main grid ── */}
+      {/* top hairline */}
+      <div className="absolute top-0 inset-x-0 h-px"
+        style={{ background: "linear-gradient(90deg,transparent,rgba(99,102,241,0.5),rgba(56,189,248,0.5),transparent)" }} />
+
+      {/* ── Ghost name + marquee ── */}
+      <div className="relative z-10 pt-10 overflow-hidden">
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ staggerChildren: 0.1 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 pb-12"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center px-4 mb-5"
         >
-
-          {/* brand — 5 cols */}
-          <motion.div variants={fadeUp} className="lg:col-span-5 flex flex-col gap-5">
-            {/* logo */}
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-black flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg,#6366f1,#38bdf8)' }}>
-                A
-              </div>
-              <span className="text-white font-bold text-lg" style={{ fontFamily: "'Syne', sans-serif" }}>
-                Aditya Kumar
-              </span>
-            </div>
-
-            <p className="text-sm leading-relaxed max-w-sm" style={{ color: 'rgba(148,163,184,0.75)' }}>
-              B.Tech CSE student · Full-stack developer · Competitive programmer.
-              Building things that matter, one commit at a time.
-            </p>
-
-            {/* social icons */}
-            <div className="flex gap-2">
-              {socialLinks.map((s) => (
-                <motion.a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ y: -3, scale: 1.08 }}
-                  whileTap={{ scale: 0.93 }}
-                  aria-label={s.label}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl transition-colors duration-150"
-                  style={{
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    color: 'rgba(148,163,184,0.7)',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = s.color)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(148,163,184,0.7)')}
-                >
-                  <s.icon size={16} />
-                </motion.a>
-              ))}
-            </div>
-
-            {/* availability badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full self-start"
-              style={{ background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.20)' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-medium text-emerald-400"
-                style={{ fontFamily: "'DM Mono', monospace" }}>
-                Open to opportunities
-              </span>
-            </div>
-          </motion.div>
-
-          {/* quick links — 3 cols */}
-          <motion.div variants={fadeUp} className="lg:col-span-3">
-            <h4 className="text-xs tracking-[0.2em] uppercase font-semibold mb-5"
-              style={{ color: 'rgba(148,163,184,0.5)', fontFamily: "'DM Mono', monospace" }}>
-              Navigation
-            </h4>
-            <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
-                <li key={link.name}>
-                  <motion.button
-                    onClick={() => scrollToSection(link.href)}
-                    whileHover={{ x: 4 }}
-                    className="text-sm transition-colors duration-150 flex items-center gap-2 group"
-                    style={{ color: 'rgba(148,163,184,0.7)', fontFamily: "'DM Mono', monospace" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = '#e2e8f0')}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(148,163,184,0.7)')}
-                  >
-                    <span className="w-1 h-1 rounded-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
-                    {link.name}
-                  </motion.button>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* contact — 4 cols */}
-          <motion.div variants={fadeUp} className="lg:col-span-4">
-            <h4 className="text-xs tracking-[0.2em] uppercase font-semibold mb-5"
-              style={{ color: 'rgba(148,163,184,0.5)', fontFamily: "'DM Mono', monospace" }}>
-              Get In Touch
-            </h4>
-
-            <p className="text-sm mb-5" style={{ color: 'rgba(148,163,184,0.7)' }}>
-              Got a project, opportunity, or just want to say hi? My inbox is always open.
-            </p>
-
-            <motion.button
-  onClick={() => {
-    const el = document.getElementById('contact');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }}
-  whileHover={{ scale: 1.03 }}
-  whileTap={{ scale: 0.97 }}
-  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
-  style={{ background: 'linear-gradient(135deg,#6366f1,#38bdf8)', boxShadow: '0 0 16px rgba(99,102,241,0.25)' }}
->
-  <Mail size={15} />
-  Say Hello
-</motion.button>
-
-            
-          </motion.div>
-        </motion.div>
-
-        {/* ── bottom bar ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-5">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-xs flex items-center gap-1.5"
-            style={{ color: 'rgba(100,116,139,0.7)', fontFamily: "'DM Mono', monospace" }}
-          >
-            © {year} Aditya Kumar · Built with
-            <motion.span
-              animate={{ scale: [1, 1.25, 1] }}
-              transition={{ duration: 1.2, repeat: Infinity }}
-              className="text-red-500 inline-flex"
-            >
-              <Heart size={12} fill="currentColor" />
-            </motion.span>
-            &amp; and lots of coffee
-          </motion.p>
-
-          {/* scroll to top */}
-          <motion.button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            whileHover={{ scale: 1.08, y: -2 }}
-            whileTap={{ scale: 0.93 }}
-            aria-label="Scroll to top"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-colors duration-150"
+          <h2
+            className="font-black leading-none select-none"
             style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: 'rgba(148,163,184,0.7)',
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'Syne',sans-serif",
+              fontSize: "clamp(2.8rem, 11vw, 8.5rem)",
+              background: "linear-gradient(135deg,rgba(241,245,249,0.10) 0%,rgba(241,245,249,0.04) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              letterSpacing: "-0.02em",
             }}
           >
-            <ArrowUp size={13} />
-            Back to top
-          </motion.button>
+            Aditya Kumar
+          </h2>
+        </motion.div>
+
+        {/* marquee */}
+        <div className="relative w-full overflow-hidden py-2.5"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="flex gap-6 whitespace-nowrap"
+            style={{ width: "max-content" }}
+          >
+            {[...MARQUEE, ...MARQUEE, ...MARQUEE, ...MARQUEE].map((item, i) => (
+              <span key={i} className="text-[10px] font-medium tracking-[0.18em] uppercase"
+                style={{
+                  fontFamily: "'DM Mono',monospace",
+                  color: item === "·" ? "rgba(99,102,241,0.55)" : T.muted,
+                }}>
+                {item}
+              </span>
+            ))}
+          </motion.div>
         </div>
       </div>
+
+      {/* ── CTA row (no Say Hello button) ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 py-7"
+        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+      >
+        <div className="flex flex-col gap-2.5">
+          <p className="text-sm" style={{ color: T.subtext }}>
+            Got a project or opportunity? My inbox is open.
+          </p>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full self-start"
+            style={{ background: "rgba(16,185,129,0.10)", border: "1px solid rgba(16,185,129,0.20)" }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+            <span className="text-xs font-medium text-emerald-400 whitespace-nowrap" style={{ fontFamily: "'DM Mono',monospace" }}>
+              Open to opportunities
+            </span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Bottom bar ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.5, delay: 0.22 }}
+        className="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 py-5 flex flex-col gap-4"
+      >
+        {/* Nav + socials: stacked on mobile, side-by-side on sm+ */}
+        <div className="flex flex-col gap-3"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "1rem" }}>
+
+          <nav className="flex flex-wrap gap-1.5">
+            {navLinks.map(link => (
+              <motion.button key={link.name} onClick={() => scrollTo(link.href)}
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                className="px-2.5 py-1.5 rounded-lg text-xs transition-all duration-150 whitespace-nowrap"
+                style={{ color: T.muted, fontFamily: "'DM Mono',monospace", background: T.chip.bg, border: T.chip.border }}
+                onMouseEnter={e => { e.currentTarget.style.color = T.text; e.currentTarget.style.borderColor = "rgba(99,102,241,0.4)"; e.currentTarget.style.background = "rgba(99,102,241,0.07)"; }}
+                onMouseLeave={e => { e.currentTarget.style.color = T.muted; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = T.chip.bg; }}
+              >
+                {link.name}
+              </motion.button>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-1.5">
+            {socials.map(s => (
+              <motion.a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
+                whileHover={{ y: -2, scale: 1.1 }} whileTap={{ scale: 0.92 }}
+                aria-label={s.label}
+                className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-150 flex-shrink-0"
+                style={{ background: T.chip.bg, border: T.chip.border, color: T.muted }}
+                onMouseEnter={e => { e.currentTarget.style.color = T.text; e.currentTarget.style.borderColor = "rgba(99,102,241,0.4)"; e.currentTarget.style.background = "rgba(99,102,241,0.08)"; }}
+                onMouseLeave={e => { e.currentTarget.style.color = T.muted; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = T.chip.bg; }}
+              >
+                <s.icon size={14} />
+              </motion.a>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom: copyright stacked above back-to-top on mobile, side-by-side on sm+ */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+
+          <div
+            className="flex items-center gap-1 whitespace-nowrap overflow-hidden"
+            style={{ color: T.muted, fontFamily: "'DM Mono',monospace", fontSize: "0.65rem", minWidth: 0 }}
+          >
+            <span>© {year} Aditya&nbsp;Kumar&nbsp;·&nbsp;made&nbsp;with&nbsp;lots&nbsp;of</span>
+            <motion.span
+              animate={{ scale: [1, 1.4, 1] }}
+              transition={{ duration: 1.3, repeat: Infinity }}
+              className="inline-block text-red-500 flex-shrink-0"
+            >
+              <Heart size={9} fill="currentColor" style={{ verticalAlign: "middle" }} />
+            </motion.span>
+            <span>&amp;&nbsp;coffee</span>
+          </div>
+
+          <motion.button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            whileHover={{ scale: 1.05, y: -1 }} whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all duration-150 self-start sm:self-auto flex-shrink-0 whitespace-nowrap"
+            style={{ background: T.chip.bg, border: T.chip.border, color: T.muted, fontFamily: "'DM Mono',monospace" }}
+            onMouseEnter={e => { e.currentTarget.style.color = T.text; e.currentTarget.style.borderColor = "rgba(99,102,241,0.4)"; e.currentTarget.style.background = "rgba(99,102,241,0.07)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = T.muted; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = T.chip.bg; }}
+          >
+            ↑ back to top
+          </motion.button>
+
+        </div>
+      </motion.div>
+
     </footer>
   );
 };
